@@ -1,10 +1,5 @@
 from dotenv import load_dotenv
-from flask import Flask
+from app import create_app
 
-load_dotenv()
-app = Flask(__name__)
-
-
-@app.route('/')
-def home():
-    return 'Hello from testimonial-backend!'
+load_dotenv(override=True)
+app = create_app()
