@@ -13,7 +13,7 @@ def create_app(config=None):
     
     # JWT Configuration
     app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', os.environ.get('SECRET_KEY'))
-    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 24 * 60 * 60  # 24 hours
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 5 * 60  # 5 minutes
 
     # Initialize extensions
     db.init_app(app)
