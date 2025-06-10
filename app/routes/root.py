@@ -1,9 +1,10 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.utils.db_handler import handle_db_operation
-from app.models import PreservedTestimonial
-from app.forms.preserved_testimonial_form import PreservedTestimonialForm
+from app.models import PreservedTestimonial, Testimonial
+from app.forms import PreservedTestimonialForm, TestimonialForm
 from app.extensions import db
+from datetime import datetime, timezone
 
 root_bp = Blueprint('root', __name__)
 
@@ -35,4 +36,32 @@ def request_form():
     return jsonify({
         'message': 'Form request created successfully',
         'access_uuid': preserved.access_uuid
+    }), 201
+
+@root_bp.route('/testimonial', methods=['POST'])
+@handle_db_operation
+def submit_testimonial():
+    # Get JSON data
+    data = request.get_json()
+    
+    # Initialize and validate form with JSON data
+    form = TestimonialForm(meta={'csrf': False}, data=data)
+    if not form.validate():
+        return jsonify({'errors': form.errors}), 400
+
+    # Create new testimonial
+    testimonial = Testimonial(
+        nameOrEmail=data['nameOrEmail'],
+        linkedin_url=data['linkedinUrl'],
+        testimonial=data['testimonial'],
+        status='PENDING'  # Default status
+    )
+    
+    db.session.add(testimonial)
+    db.session.commit()
+
+    return jsonify({
+        'message': 'Testimonial submitted successfully',
+        'status': 'PENDING',
+        'createdAt': testimonial.created_at.isoformat() + 'Z'
     }), 201
