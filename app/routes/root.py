@@ -51,9 +51,13 @@ def submit_testimonial():
 
     # Create new testimonial
     testimonial = Testimonial(
-        nameOrEmail=data['nameOrEmail'],
-        linkedin_url=data['linkedinUrl'],
+        first_name=data['first_name'],
+        last_name=data['last_name'],
+        role_company=data.get('role_company'),  # Optional field
         testimonial=data['testimonial'],
+        censor_first_name=data.get('censor_first_name', False),
+        censor_last_name=data.get('censor_last_name', False),
+        consent_given=data['consent_given'],
         status='PENDING'  # Default status
     )
     

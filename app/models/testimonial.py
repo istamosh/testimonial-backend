@@ -8,15 +8,19 @@ class Testimonial(db.Model):
     """Model for storing testimonials from users."""
     
     id: Mapped[int] = mapped_column(primary_key=True)
-    nameOrEmail: Mapped[str] = mapped_column(db.String(120), nullable=False)
-    linkedin_url: Mapped[str] = mapped_column(db.String(255), nullable=False)
+    first_name: Mapped[str] = mapped_column(db.String(60), nullable=False)
+    last_name: Mapped[str] = mapped_column(db.String(60), nullable=False)
+    role_company: Mapped[Optional[str]] = mapped_column(db.String(120), nullable=True)
     testimonial: Mapped[str] = mapped_column(db.Text, nullable=False)
+    censor_first_name: Mapped[bool] = mapped_column(db.Boolean, default=False, nullable=False)
+    censor_last_name: Mapped[bool] = mapped_column(db.Boolean, default=False, nullable=False)
+    consent_given: Mapped[bool] = mapped_column(db.Boolean, default=False, nullable=False)
     status: Mapped[str] = mapped_column(
-        Enum('PENDING', 'APPROVED', name='testimonial_status'),
+        Enum('PENDING', 'APPROVED', 'REJECTED', name='testimonial_status'),
         nullable=False, default='PENDING'
     )
     created_at: Mapped[datetime] = mapped_column(default=datetime.now(timezone.utc), nullable=False)
     approved_at: Mapped[Optional[datetime]] = mapped_column(nullable=True)
 
     def __repr__(self) -> str:
-        return f'<Testimonial {self.nameOrEmail}>'
+        return f'<Testimonial {self.first_name} {self.last_name}>'
