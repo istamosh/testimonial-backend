@@ -44,6 +44,9 @@ def submit_testimonial():
     # Get JSON data
     data = request.get_json()
     
+    if not data:
+        return jsonify({'message': 'No data provided'}), 400
+    
     # Initialize and validate form with JSON data
     form = TestimonialForm(meta={'csrf': False}, data=data)
     if not form.validate():
