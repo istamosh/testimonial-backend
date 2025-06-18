@@ -68,11 +68,11 @@ def update_testimonial_status(testimonial_id):
         # Update testimonial status
         testimonial.status = new_status
         
-        # Set approved_at timestamp if approving
+        # Set approved_at timestamp if approving, clear it if retracting to pending or rejecting
         if new_status == 'APPROVED':
             from datetime import datetime, timezone
             testimonial.approved_at = datetime.now(timezone.utc)
-        elif new_status == 'REJECTED':
+        elif new_status in ['REJECTED', 'PENDING']:
             testimonial.approved_at = None
             
         db.session.commit()
@@ -81,7 +81,8 @@ def update_testimonial_status(testimonial_id):
             'message': f'Testimonial {new_status.lower()} successfully',
             'testimonial': {
                 'id': testimonial.id,
-                'status': new_status
+                'status': new_status,
+                'approved_at': testimonial.approved_at.isoformat() if testimonial.approved_at else None
             }
         }), 200
     except Exception as e:
