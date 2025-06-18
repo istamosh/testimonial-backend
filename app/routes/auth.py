@@ -1,9 +1,9 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, make_response
 from app.models import User
 from app.extensions import db
 from app.forms import SignupForm, LoginForm, UpdateUserForm
 from app.utils.db_handler import handle_db_operation
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -80,7 +80,25 @@ def login():
     # Generate access token
     access_token = create_access_token(identity=str(user.id))
     
-    return jsonify({
-        'message': 'Login successful',
-        'access_token': access_token
-    }), 200
+    # Create response and set httpOnly cookie
+    response = make_response(jsonify({
+        'message': 'Login successful'
+    }))
+    
+    # Set JWT token in httpOnly cookie
+    set_access_cookies(response, access_token)
+    
+    return response, 200
+
+@auth_bp.route('/logout', methods=['POST'])
+@handle_db_operation
+def logout():
+    """Logout route that clears JWT cookies"""
+    response = make_response(jsonify({
+        'message': 'Logout successful'
+    }))
+    
+    # Clear JWT cookies
+    unset_jwt_cookies(response)
+    
+    return response, 200

@@ -16,6 +16,12 @@ def create_app(config=None):
     # JWT Configuration
     app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', os.environ.get('SECRET_KEY'))
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=5)
+    
+    # Cookie-based JWT configuration
+    app.config['JWT_TOKEN_LOCATION'] = ['cookies']
+    app.config['JWT_COOKIE_SECURE'] = False  # Set to True in production with HTTPS
+    app.config['JWT_COOKIE_CSRF_PROTECT'] = False  # Disable CSRF for API-only usage
+    app.config['JWT_COOKIE_SAMESITE'] = 'Strict'
 
     # Initialize extensions
     db.init_app(app)
