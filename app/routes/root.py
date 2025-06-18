@@ -57,6 +57,7 @@ def submit_testimonial():
         first_name=data['first_name'],
         last_name=data['last_name'],
         role_company=data.get('role_company'),  # Optional field
+        profile_link=data['profile_link'],  # Required field
         testimonial=data['testimonial'],
         censor_first_name=data.get('censor_first_name', False),
         censor_last_name=data.get('censor_last_name', False),

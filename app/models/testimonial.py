@@ -11,6 +11,7 @@ class Testimonial(db.Model):
     first_name: Mapped[str] = mapped_column(db.String(60), nullable=False)
     last_name: Mapped[str] = mapped_column(db.String(60), nullable=False)
     role_company: Mapped[Optional[str]] = mapped_column(db.String(120), nullable=True)
+    profile_link: Mapped[str] = mapped_column(db.String(500), nullable=False)
     testimonial: Mapped[str] = mapped_column(db.Text, nullable=False)
     censor_first_name: Mapped[bool] = mapped_column(db.Boolean, default=False, nullable=False)
     censor_last_name: Mapped[bool] = mapped_column(db.Boolean, default=False, nullable=False)

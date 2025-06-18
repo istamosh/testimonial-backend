@@ -28,6 +28,7 @@ def get_all_testimonials():
             'first_name': testimonial.first_name,
             'last_name': testimonial.last_name,
             'role_company': testimonial.role_company or '',
+            'profile_link': testimonial.profile_link or '',
             'testimonial': testimonial.testimonial,
             'status': testimonial.status,
             'censor_first_name': testimonial.censor_first_name,
@@ -106,6 +107,7 @@ def get_approved_testimonials():
             'id': testimonial.id,
             'name': f"{display_first_name} {display_last_name}",
             'role_company': testimonial.role_company or '',
+            'profile_link': testimonial.profile_link or '',
             'testimonial': testimonial.testimonial,
             'created_at': testimonial.created_at.isoformat()
         })

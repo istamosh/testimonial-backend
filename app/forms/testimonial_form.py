@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, BooleanField
-from wtforms.validators import DataRequired, Length
+from wtforms.validators import DataRequired, Length, URL, Optional
 
 class TestimonialForm(FlaskForm):
     class Meta:
@@ -17,6 +17,12 @@ class TestimonialForm(FlaskForm):
     ])
     role_company = StringField('Role/Company', validators=[
         Length(max=120, message='Role/Company must not exceed 120 characters')
+    ])
+    profile_link = StringField('Professional Profile Link', validators=[
+        DataRequired(message='Profile link is required'),
+        Length(min=1, message='Profile link cannot be empty'),
+        URL(message='Please enter a valid URL (e.g., https://linkedin.com/in/yourname)'),
+        Length(max=500, message='Profile link must not exceed 500 characters')
     ])
     testimonial = TextAreaField('Testimonial', validators=[
         DataRequired(message='Testimonial message is required'),
