@@ -113,3 +113,48 @@ def get_approved_testimonials():
         })
     
     return jsonify(testimonials_data), 200
+
+@admin_bp.route('/testimonials/<int:testimonial_id>', methods=['DELETE'])
+@jwt_required()
+@handle_db_operation
+def delete_testimonial(testimonial_id):
+    """Delete a testimonial (admin only)"""
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    if not user:
+        return jsonify({'message': 'Unauthorized'}), 401
+
+    testimonial = Testimonial.query.get(testimonial_id)
+    if not testimonial:
+        return jsonify({'message': 'Testimonial not found'}), 404
+
+    try:
+        db.session.delete(testimonial)
+        db.session.commit()
+        return jsonify({'message': 'Testimonial deleted successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': 'Failed to delete testimonial'}), 500
+
+@admin_bp.route('/testimonials/bulk_delete', methods=['POST'])
+@jwt_required()
+@handle_db_operation
+def bulk_delete_testimonials():
+    """Bulk delete testimonials by IDs (admin only)"""
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    if not user:
+        return jsonify({'message': 'Unauthorized'}), 401
+
+    data = request.get_json()
+    ids = data.get('ids')
+    if not ids or not isinstance(ids, list):
+        return jsonify({'message': 'A list of testimonial IDs is required.'}), 400
+
+    try:
+        deleted_count = Testimonial.query.filter(Testimonial.id.in_(ids)).delete(synchronize_session=False)
+        db.session.commit()
+        return jsonify({'message': f'{deleted_count} testimonials deleted successfully.'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': 'Failed to delete testimonials.'}), 500
