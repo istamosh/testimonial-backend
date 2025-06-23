@@ -57,6 +57,8 @@ markupsafe==3.0.2
     #   wtforms
 packaging==25.0
     # via gunicorn
+psycopg2-binary==2.9.10
+    # via testimonial-backend (pyproject.toml)
 pyjwt==2.10.1
     # via flask-jwt-extended
 python-dotenv==1.1.0

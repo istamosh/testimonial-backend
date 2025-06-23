@@ -1,15 +1,19 @@
 import os
+from dotenv import load_dotenv
 from flask import Flask, jsonify
 from .extensions import db, bcrypt, jwt, migrate
 from .routes import BLUEPRINTS
 from .utils.errors import APIError, NotFoundError, MethodNotAllowedError
 from datetime import timedelta
 
+# Load environment variables from .env if present (for local development)
+load_dotenv(override=True)
+
 def create_app(config=None):
     app = Flask(__name__)
 
-    # Configure SQLite database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+    # Use DATABASE_URL if set, otherwise fallback to SQLite
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///users.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
     
