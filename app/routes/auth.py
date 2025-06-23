@@ -102,3 +102,13 @@ def logout():
     unset_jwt_cookies(response)
     
     return response, 200
+
+@auth_bp.route('/me', methods=['GET'])
+@jwt_required()
+@handle_db_operation
+def get_current_user():
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    return jsonify({'username': user.username}), 200
